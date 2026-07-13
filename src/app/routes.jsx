@@ -1,6 +1,7 @@
 import { createBrowserRouter, Navigate } from 'react-router';
 import { ProtectedLayout } from './layouts/ProtectedLayout';
 import { RootLayout } from './layouts/RootLayout';
+import { LandingPage } from './pages/LandingPage';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { WorkspaceOverlay } from './components/smarttime/workspace/WorkspaceOverlay';
@@ -15,11 +16,14 @@ function NotFound() {
 }
 export const router = createBrowserRouter([
     // ── Public routes ─────────────────────────────────────────────
+    { path: '/', Component: LandingPage },
     { path: '/login', Component: LoginPage },
     { path: '/register', Component: RegisterPage },
     // ── Protected routes ──────────────────────────────────────────
     {
-        path: '/',
+        // Pathless layout: '/' is now owned by the public LandingPage above,
+        // so this no longer claims a path segment — children below still
+        // resolve to their own absolute paths (/dashboard, /projects, etc.)
         Component: ProtectedLayout,
         children: [
             {
@@ -27,8 +31,6 @@ export const router = createBrowserRouter([
                 // Outlet here renders workspace overlay for /projects/:id routes
                 Component: RootLayout,
                 children: [
-                    // Redirect root to dashboard
-                    { index: true, element: <Navigate to="/dashboard" replace/> },
                     { path: 'dashboard', element: null }, // RootLayout renders dashboard content
                     { path: 'projects', element: null }, // RootLayout renders projects list
                     { path: 'settings', element: null },

@@ -9,7 +9,13 @@
       "Bash(git add *)",
       "Bash(git push *)",
       "Bash(node --check \"src/app/components/smarttime/workspace/TimetableTab.jsx\")",
-      "Bash(node --check \"src/app/components/smarttime/TopNav.jsx\")"
+      "Bash(node --check \"src/app/components/smarttime/TopNav.jsx\")",
+      "Bash(grep -iE \"^\\(shield-check|user-check|calendar-clock|list-checks|gauge|rocket|clipboard-list|sliders-horizontal|github|door-open|sparkles|zap|check-circle-2|arrow-right|menu|x\\\\.js|sun\\\\.js|moon\\\\.js\\)\\\\.js$\")",
+      "Skill(run)",
+      "Skill(run:*)",
+      "Bash(npx --yes playwright --version)",
+      "Bash(npx --yes playwright install chromium)",
+      "Bash(npm init *)"
     ]
   }
 }

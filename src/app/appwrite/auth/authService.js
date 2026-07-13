@@ -46,6 +46,17 @@ class AuthService {
         throw new Error('Email and password are required');
       }
 
+      // A session already active on this browser (e.g. from an earlier visit)
+      // makes Appwrite reject createEmailPasswordSession() with 401
+      // user_session_already_exists. Clear it first so the credentials just
+      // submitted are always properly validated and a new session can always
+      // be created — no active session means this is a no-op.
+      try {
+        await account.deleteSession('current');
+      } catch {
+        // No active session to clear — expected on a normal first login.
+      }
+
       await account.createEmailPasswordSession(email, password);
       return {
         success: true,

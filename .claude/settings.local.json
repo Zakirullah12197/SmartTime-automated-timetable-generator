@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install *)",
+      "Bash(npm run *)",
+      "Bash(grep -n 'updatedAt\\\\|createdAt\\\\|$updatedAt\\\\|$createdAt' src/app/components/smarttime/ProjectGrid.jsx)"
+    ]
+  }
+}

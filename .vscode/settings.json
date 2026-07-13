@@ -1,0 +1,8 @@
+{
+  "javascript.validate.enable": true,
+  "typescript.validate.enable": false,
+  "javascript.suggest.autoImports": true,
+  "js/ts.implicitProjectConfig.checkJs": false,
+  "typescript.tsserver.experimental.enableProjectDiagnostics": false,
+  "npm.packageManager": "npm"
+}

@@ -82,6 +82,11 @@ import {
       workingDays = daysOfWeek.slice(0, settings.numberOfWorkingDays);
     } else if (typeof project.numberOfWorkingDays === 'number' && project.numberOfWorkingDays >= 1 && project.numberOfWorkingDays <= 7) {
       workingDays = daysOfWeek.slice(0, project.numberOfWorkingDays);
+    } else if (typeof settings.workingDays === 'number' && settings.workingDays >= 1 && settings.workingDays <= 7) {
+      // Real persisted schema: CreateProjectModal/projectService store workingDays as a day-count (5/6/7)
+      workingDays = daysOfWeek.slice(0, settings.workingDays);
+    } else if (typeof project.workingDays === 'number' && project.workingDays >= 1 && project.workingDays <= 7) {
+      workingDays = daysOfWeek.slice(0, project.workingDays);
     }
 
     const config = {

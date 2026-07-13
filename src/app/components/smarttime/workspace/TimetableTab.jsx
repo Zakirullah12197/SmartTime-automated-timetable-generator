@@ -40,9 +40,12 @@ export function TimetableTab({ project }) {
     const conflicts = currentTimetable?.conflicts || [];
     const conflictCount = conflicts.length;
 
-    const days = project.workingDays === 'mon-sat' ? ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-        : project.workingDays === 'mon-sun' ? ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-            : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+    // project.workingDays is persisted as a day-count (5/6/7), not the legacy
+    // 'mon-fri'/'mon-sat'/'mon-sun' preset strings — mirrors ProjectGrid.jsx's
+    // getWorkingDaysCount normalization.
+    const WEEK_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    const workingDaysCount = Number(project.workingDays) || 5;
+    const days = WEEK_LABELS.slice(0, Math.min(Math.max(workingDaysCount, 1), WEEK_LABELS.length));
             
     const slotsCount = project.slotsPerDay || 6;
 

@@ -2,13 +2,19 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": [
+        "src/*"
+      ]
     },
     "jsx": "react-jsx",
     "module": "ESNext",
     "moduleResolution": "bundler",
     "target": "ESNext",
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "lib": [
+      "ES2020",
+      "DOM",
+      "DOM.Iterable"
+    ],
     "allowJs": true,
     "checkJs": false,
     "skipLibCheck": true,
@@ -20,6 +26,16 @@
   "typeAcquisition": {
     "enable": false
   },
-  "include": ["src/**/*.js", "src/**/*.jsx", "vite.config.js"],
-  "exclude": ["node_modules", "dist", "**/*.ts", "**/*.tsx", "**/*.d.ts"]
+  "include": [
+    "src/**/*.js",
+    "src/**/*.jsx",
+    "vite.config.js"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.d.ts"
+  ]
 }

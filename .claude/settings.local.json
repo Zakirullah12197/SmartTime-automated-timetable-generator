@@ -7,7 +7,9 @@
       "Bash(node --check \"src/app/algorithm/timetableGenerator.js\")",
       "Bash(node --check \"src/app/algorithm/conflictDetector.js\")",
       "Bash(git add *)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "Bash(node --check \"src/app/components/smarttime/workspace/TimetableTab.jsx\")",
+      "Bash(node --check \"src/app/components/smarttime/TopNav.jsx\")"
     ]
   }
 }

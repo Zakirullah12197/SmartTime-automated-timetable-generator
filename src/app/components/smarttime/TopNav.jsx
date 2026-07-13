@@ -143,10 +143,10 @@ export function TopNav({ onNewProject }) {
                 </div>
                 <div className="py-1.5">
                   {[
-                { icon: User, label: 'Profile' },
-                { icon: Settings, label: 'Settings' },
-                { icon: HelpCircle, label: 'Help & Support' },
-            ].map(item => (<button key={item.label} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-left transition-colors duration-150" style={{ color: colors.textSec }} onMouseEnter={e => (e.currentTarget.style.background = colors.glass)} onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}>
+                { icon: User, label: 'Profile', path: '/settings' },
+                { icon: Settings, label: 'Settings', path: '/settings' },
+                { icon: HelpCircle, label: 'Help & Support', path: '/about' },
+            ].map(item => (<button key={item.label} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-left transition-colors duration-150" style={{ color: colors.textSec }} onMouseEnter={e => (e.currentTarget.style.background = colors.glass)} onMouseLeave={e => (e.currentTarget.style.background = 'transparent')} onClick={() => { setDropdownOpen(false); navigate(item.path); }}>
                       <item.icon size={14} style={{ color: colors.textMuted }}/>
                       {item.label}
                     </button>))}

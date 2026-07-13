@@ -31,9 +31,12 @@ export function TimeSlotsTab({ project: propProject }) {
         return { index: i + 1, start, end };
     });
 
-    const days = activeProject.workingDays === 'mon-sat' ? ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-        : activeProject.workingDays === 'mon-sun' ? ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-            : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+    // activeProject.workingDays is persisted as a day-count (5/6/7), not the
+    // legacy 'mon-fri'/'mon-sat'/'mon-sun' preset strings — mirrors
+    // ProjectGrid.jsx's getWorkingDaysCount normalization.
+    const WEEK_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    const workingDaysCount = Number(activeProject.workingDays) || 5;
+    const days = WEEK_LABELS.slice(0, Math.min(Math.max(workingDaysCount, 1), WEEK_LABELS.length));
 
     return (<div className="p-6">
       <div className="flex items-center justify-between mb-5">

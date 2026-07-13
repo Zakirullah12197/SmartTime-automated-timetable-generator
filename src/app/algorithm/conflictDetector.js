@@ -5,16 +5,21 @@
 /**
  * Detect all structural clashes in a generated timetable layout
  * @param {Array} slots - Flat array of assigned timetable slots
+ * @param {boolean} useRooms - Whether rooms are part of this project's pipeline
  * @returns {Array} List of detected conflict objects
  */
-export const detectConflicts = (slots) => {
+export const detectConflicts = (slots, useRooms = true) => {
     const conflicts = [];
-    
+
     // Evaluate operational double-bookings
     conflicts.push(...detectTeacherConflicts(slots));
-    conflicts.push(...detectRoomConflicts(slots));
+    // Room clashes are meaningless when rooms aren't part of the pipeline —
+    // every slot would share the same null roomId and falsely "collide".
+    if (useRooms) {
+      conflicts.push(...detectRoomConflicts(slots));
+    }
     conflicts.push(...detectClassConflicts(slots));
-    
+
     return conflicts;
 };
   

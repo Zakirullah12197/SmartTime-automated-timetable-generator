@@ -40,23 +40,30 @@ import {
     settings = {}
   ) => {
     const startTime = Date.now();
-    
+
+    // Single source of truth for whether the room pipeline runs at all.
+    // Explicit settings.useRooms (from the workspace toolbar) wins; otherwise
+    // fall back to the project's own Project Settings value.
+    const useRooms = settings.useRooms !== undefined
+      ? settings.useRooms === true
+      : project.useRooms === true;
+
     // ============================================
     // STEP 0: Edge Case - Empty Data
     // ============================================
     if (!classes || classes.length === 0) {
       return createEmptyTimetable('No classes found', startTime, project);
     }
-    
+
     if (!subjects || subjects.length === 0) {
       return createEmptyTimetable('No subjects found', startTime, project);
     }
-    
+
     if (!teachers || teachers.length === 0) {
       return createEmptyTimetable('No teachers found', startTime, project);
     }
-    
-    if (!rooms || rooms.length === 0) {
+
+    if (useRooms && (!rooms || rooms.length === 0)) {
       return createEmptyTimetable('No rooms found', startTime, project);
     }
     
@@ -124,17 +131,18 @@ import {
         timeSlots,
         allSlots,
         subjectTeacherMap,
-        rooms
+        rooms,
+        useRooms
       );
-      
+
       allSlots.push(...classSlots);
       warnings.push(...classWarnings);
     });
-    
+
     // ============================================
     // STEP 7: Detect Conflicts
     // ============================================
-    const conflicts = detectConflicts(allSlots);
+    const conflicts = detectConflicts(allSlots, useRooms);
     const workloadIssues = detectWorkloadIssues(allSlots);
     
     // ============================================
@@ -265,7 +273,8 @@ import {
     timeSlots,
     existingSlots,
     subjectTeacherMap,
-    rooms
+    rooms,
+    useRooms
   ) => {
     const classSlots = [];
     const warnings = [];
@@ -300,7 +309,8 @@ import {
           timeSlots,
           [...existingSlots, ...classSlots.filter(s => s !== null)],
           subjectTeacherMap,
-          rooms
+          rooms,
+          useRooms
         );
         
         if (slotIndex === -1) continue;
@@ -319,10 +329,10 @@ import {
         
         const teacher = findBestTeacher(subjectId, day, slotNumber, currentSlots, subjectTeacherMap);
         if (!teacher) continue;
-        
-        const room = findBestRoom(day, slotNumber, currentSlots, rooms);
-        if (!room) continue;
-        
+
+        const room = useRooms ? findBestRoom(day, slotNumber, currentSlots, rooms) : null;
+        if (useRooms && !room) continue;
+
         const slot = createSlot(classItem, requirement, teacher, room, day, dayIndex, timeSlot);
         classSlots[slotIndex] = slot;
         scheduledPeriods++;
@@ -355,7 +365,8 @@ import {
     timeSlots,
     existingSlots,
     subjectTeacherMap,
-    rooms
+    rooms,
+    useRooms
   ) => {
     const totalSlotsPerDay = timeSlots.length;
     const totalSlots = config.workingDays.length * totalSlotsPerDay;
@@ -374,10 +385,12 @@ import {
       
       const teacher = findBestTeacher(requirement.subjectId, day, slotNumber, existingSlots, subjectTeacherMap);
       if (!teacher) continue;
-      
-      const room = findBestRoom(day, slotNumber, existingSlots, rooms);
-      if (!room) continue;
-      
+
+      if (useRooms) {
+        const room = findBestRoom(day, slotNumber, existingSlots, rooms);
+        if (!room) continue;
+      }
+
       return slotIndex;
     }
     
@@ -437,11 +450,11 @@ import {
       subjectCode: subject.subjectCode,
       teacherId: teacher.$id,
       teacherName: teacher.name || `Teacher ${teacher.$id}`,
-      roomId: room.$id,
-      roomNumber: room.number || room.name || `Room ${room.$id}`,
-      roomType: room.type || 'classroom',
+      roomId: room ? room.$id : null,
+      roomNumber: room ? (room.number || room.name || `Room ${room.$id}`) : null,
+      roomType: room ? (room.type || 'classroom') : null,
       isBreak: false,
-      isLab: room.type === 'lab',
+      isLab: room ? room.type === 'lab' : false,
       credits: 1,
       color: subject.color,
       position: { row: dayIndex, col: timeSlot.slotNumber }
@@ -480,7 +493,7 @@ import {
       conflictCount: conflicts.length + workloadIssues.length,
       utilizationRate: slots.length > 0 ? Math.round((nonBreakSlots.length / slots.length) * 100) : 0,
       teachersInvolved: new Set(nonBreakSlots.map(s => s.teacherId)).size,
-      roomsUsed: new Set(nonBreakSlots.map(s => s.roomId)).size,
+      roomsUsed: new Set(nonBreakSlots.map(s => s.roomId).filter(Boolean)).size,
       classesScheduled: classes.length
     };
   };
